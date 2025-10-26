@@ -1,0 +1,96 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './HomePage.css';
+
+export default function HomePage() {
+  return (
+    <div className="home-page">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <h1>Welcome to Galle My Bungalow</h1>
+          <p>Experience luxury beachfront living in the heart of historic Galle, Sri Lanka</p>
+          <div className="hero-buttons">
+            <Link to="/reserve" className="cta-button primary">Book Your Stay</Link>
+            <Link to="/history" className="cta-button secondary">Learn Our History</Link>
+          </div>
+        </div>
+        <div className="hero-image">
+          <div className="placeholder-image">
+            <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="300" rx="12" fill="url(#beachGradient)"/>
+              <path d="M0 200L400 200L400 300L0 300Z" fill="url(#sandGradient)"/>
+              <path d="M50 180L100 160L150 170L200 150L250 160L300 140L350 150L400 140L400 200L0 200Z" fill="url(#waterGradient)"/>
+              <circle cx="80" cy="120" r="20" fill="#FFD700" opacity="0.8"/>
+              <defs>
+                <linearGradient id="beachGradient" x1="0" y1="0" x2="400" y2="300" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#87CEEB"/>
+                  <stop offset="1" stopColor="#E0F6FF"/>
+                </linearGradient>
+                <linearGradient id="sandGradient" x1="0" y1="200" x2="400" y2="300" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#F4A460"/>
+                  <stop offset="1" stopColor="#D2B48C"/>
+                </linearGradient>
+                <linearGradient id="waterGradient" x1="0" y1="140" x2="400" y2="200" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#4682B4"/>
+                  <stop offset="1" stopColor="#5F9EA0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="features-section">
+        <div className="features-container">
+          <h2>Why Choose Galle My Bungalow?</h2>
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 17l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>Rich History</h3>
+              <p>Immerse yourself in the colonial charm and historical significance of Galle Fort</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 12l9-9 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>Prime Location</h3>
+              <p>Located in the heart of Galle Fort with easy access to beaches and attractions</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h3>Luxury Experience</h3>
+              <p>Premium amenities and personalized service for an unforgettable stay</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="cta-container">
+          <h2>Ready for Your Galle Adventure?</h2>
+          <p>Book your stay today and experience the magic of Galle My Bungalow</p>
+          <div className="cta-buttons">
+            <Link to="/reserve" className="cta-button primary">Make a Reservation</Link>
+            <Link to="/contact" className="cta-button secondary">Contact Us</Link>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

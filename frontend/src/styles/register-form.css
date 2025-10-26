@@ -1,0 +1,157 @@
+:root {
+  /* Primary Brand Colors - Golden Palette */
+  --primary: #B8860B;       /* Dark Goldenrod */
+  --primary-dark: #9A7209;  /* Darker Gold */
+  --primary-light: #D4AF37; /* Goldenrod */
+  --primary-50: #FDF6E3;    /* Very Light Gold */
+
+  /* Accent Colors */
+  --accent: #F4D03F;        /* Light Gold */
+  --accent-dark: #D4AC0D;   /* Medium Gold */
+}
+
+/* Register Page */
+.register-page {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--primary-50) 0%, #ffffff 100%);
+  padding: 2rem;
+}
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  color: #666;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.close-button:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Card */
+.register-card {
+  max-width: 640px;
+  margin: 28px auto;
+  padding: 24px;
+  background: var(--primary-50);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+  font-family: "Segoe UI", Roboto, system-ui, sans-serif;
+}
+
+/* Each row */
+.register-grid {
+  margin-bottom: 12px;
+}
+
+/* Label + input grid */
+.register-field {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.register-text {
+	margin-top: 5%;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.register-text2 {
+  margin-top: 1%;
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+/* Label text */
+.register-field > span {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--primary-dark);
+  justify-self: start;
+}
+
+/* Input */
+.register-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #d0d6dc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.register-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-50);
+}
+
+/* Register button */
+.register-button {
+  display: block;
+  margin: 12px auto 0 auto; /* center horizontally */
+  width: 160px;             /* smaller button */
+  padding: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.register-button:disabled {
+  background: #c8b36e;
+  cursor: not-allowed;
+}
+
+.register-button:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+/* Messages */
+.register-error,
+.register-success {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.register-error { color: #d9534f; }
+.register-success { color: #28a745; }
+
+/* Responsive layout for mobile */
+@media (max-width: 600px) {
+  .register-field {
+    grid-template-columns: 1fr;
+  }
+
+  .register-field > span {
+    margin-bottom: 6px;
+  }
+
+  .register-button {
+    width: 100%;
+  }
+}

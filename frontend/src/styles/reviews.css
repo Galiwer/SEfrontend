@@ -1,0 +1,195 @@
+:root {
+  /* Yellow/Gold + White theme */
+  --primary: #B8860B;
+  --primary-dark: #9A7209;
+  --primary-light: #D4AF37;
+  --primary-50: #FFF9E6; /* Lighter cream */
+  --accent: #F4D03F;
+  --accent-dark: #D4AC0D;
+
+  /* Reviews theme tokens (light) */
+  --rv-bg: linear-gradient(180deg, #ffffff, var(--primary-50));
+  --rv-card: #ffffff;
+  --rv-surface: #ffffff;
+  --rv-accent: var(--accent);
+  --rv-accent-2: var(--primary-light);
+  --rv-text: #111827;   /* slate-900 */
+  --rv-subtext: #4b5563;/* slate-600 */
+  --rv-muted: rgba(0, 0, 0, 0.04);
+  --rv-border: rgba(0,0,0,0.08);
+  --rv-ring: rgba(244, 208, 63, 0.35);
+}
+
+/* Page wrapper consistent with gallery */
+.reviews-page {
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(244,208,63,0.18) 0%, rgba(255,255,255,0) 60%),
+              radial-gradient(900px 450px at 110% 10%, rgba(255,230,153,0.18) 0%, rgba(255,255,255,0) 60%),
+              var(--rv-bg);
+  padding: 56px 16px 72px;
+}
+
+.reviews-title {
+  text-align: center;
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111827;
+  margin: 0 auto 28px;
+  position: relative;
+  max-width: 900px;
+}
+
+.reviews-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  margin: 14px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--rv-accent), var(--rv-accent-2));
+  box-shadow: 0 0 0 6px rgba(244,208,63,0.16);
+}
+
+/* Reviews list */
+.reviews-container {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .reviews-grid { gap: 18px; }
+}
+@media (min-width: 1024px) {
+  .reviews-grid { gap: 20px; }
+}
+
+.review-card {
+  background: #ffffff;
+  border: 1px solid var(--rv-border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  color: var(--rv-text);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(212,175,55,0.65);
+  box-shadow: 0 16px 30px rgba(0,0,0,0.12);
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.review-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFE082, #F4D03F);
+  border: 1px solid rgba(244,208,63,0.45);
+}
+
+.review-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.review-date {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--rv-subtext);
+}
+
+.review-message {
+  margin-top: 10px;
+  line-height: 1.7;
+  color: var(--rv-text);
+  white-space: pre-wrap;
+}
+
+.review-reply {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(253, 230, 138, 0.35);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+.review-reply-title {
+  font-weight: 700;
+  color: #8b6b00;
+  margin-bottom: 6px;
+}
+
+/* Empty/loading/error states */
+.rv-state {
+  max-width: 680px;
+  margin: 18px auto 0;
+  text-align: center;
+  color: var(--rv-subtext);
+}
+
+/* Add review form */
+.review-form {
+  max-width: 680px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid var(--rv-border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.review-form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.rv-input, .rv-textarea {
+  width: 100%;
+  background: #ffffff;
+  color: var(--rv-text);
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 12px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.rv-input::placeholder, .rv-textarea::placeholder { color: #6b7280; }
+
+.rv-input:focus, .rv-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--rv-ring);
+}
+
+.rv-textarea { min-height: 140px; resize: vertical; }
+
+.rv-btn {
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(244,208,63,0.6);
+  background: linear-gradient(90deg, #FFE082, var(--accent));
+  color: #3d2f00;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: transform .15s ease, box-shadow .2s ease, filter .15s ease;
+}
+
+.rv-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.rv-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.rv-error { color: #b91c1c; margin-top: 6px; }
+.rv-success { color: #166534; margin-top: 6px; }

@@ -119,6 +119,37 @@
   border-left: 4px solid #ffc107;
 }
 
+/* Status-based color coding */
+.calendar-day.status-confirmed {
+  background: #d4edda;
+  border-left: 4px solid #28a745;
+}
+
+.calendar-day.status-confirmed .booking-count {
+  background: #28a745;
+  color: white;
+}
+
+.calendar-day.status-pending {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+}
+
+.calendar-day.status-pending .booking-count {
+  background: #ffc107;
+  color: #856404;
+}
+
+.calendar-day.status-cancelled {
+  background: #f8d7da;
+  border-left: 4px solid #dc3545;
+}
+
+.calendar-day.status-cancelled .booking-count {
+  background: #dc3545;
+  color: white;
+}
+
 .day-number {
   font-weight: 600;
   font-size: 1rem;
@@ -173,6 +204,21 @@
 .legend-color.has-bookings {
   background: #fff3cd;
   border-color: #ffc107;
+}
+
+.legend-color.status-confirmed {
+  background: #d4edda;
+  border-color: #28a745;
+}
+
+.legend-color.status-pending {
+  background: #fff3cd;
+  border-color: #ffc107;
+}
+
+.legend-color.status-cancelled {
+  background: #f8d7da;
+  border-color: #dc3545;
 }
 
 .legend-color.other-month {
@@ -246,6 +292,51 @@
   border-radius: 8px;
   padding: 1rem;
   border-left: 4px solid #3498db;
+}
+
+.booking-item.clickable-booking {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.booking-item.clickable-booking:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.booking-item.clickable-booking.highlighted {
+  background: #007bff;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+  border-left-color: #0056b3;
+}
+
+.booking-item.clickable-booking.highlighted .booking-header h4 {
+  color: white;
+}
+
+.booking-item.clickable-booking.highlighted .booking-details {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.booking-item.clickable-booking.highlighted .booking-action-hint {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.booking-item.clickable-booking.highlighted .status {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.booking-action-hint {
+  margin-top: 0.5rem;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
 }
 
 .booking-header {

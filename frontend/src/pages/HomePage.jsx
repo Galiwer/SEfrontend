@@ -1,12 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import BungalowHistory from '../components/BungalowHistory';
+import Gallery from '../pages/gallery';
+import ReviewsPage from '../pages/ReviewsPage';
+import FAQPage from '../components/FAQPage';
+import AttractionsPage from '../components/AttractionsPage';
+import ContactPage from '../components/ContactPage';
 import './HomePage.css';
 
 export default function HomePage() {
+  const [visibleSections, setVisibleSections] = useState([]);
+
+  useEffect(() => {
+    // Smooth scroll behavior with intersection observer
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: '0px 0px -80px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          setVisibleSections((prev) => [...new Set([...prev, entry.target.id])]);
+        }
+      });
+    }, observerOptions);
+
+    // Observe sections
+    const observeSections = () => {
+      const sections = document.querySelectorAll('#features, #history, #gallery, #reviews, #faq, #attractions, #contacts, #cta');
+      sections.forEach((section) => {
+        observer.observe(section);
+      });
+    };
+
+    // Wait for DOM to be ready
+    const timer = setTimeout(observeSections, 50);
+
+    return () => {
+      clearTimeout(timer);
+      const sections = document.querySelectorAll('.scroll-section');
+      sections.forEach((section) => observer.unobserve(section));
+    };
+  }, []);
+
   return (
     <div className="home-page">
       {/* Hero Section */}
-      <section className="hero-section">
+      <section className="hero-section scroll-section" id="hero">
         <div className="hero-content">
           <h1>Welcome to Galle My Bungalow</h1>
           <p>Experience luxury beachfront living in the heart of historic Galle, Sri Lanka</p>
@@ -42,7 +84,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="features-section">
+      <section className="features-section scroll-section" id="features">
         <div className="features-container">
           <h2>Why Choose Galle My Bungalow?</h2>
           <div className="features-grid">
@@ -80,8 +122,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* History Section */}
+      <section className="content-section scroll-section" id="history">
+        <BungalowHistory />
+      </section>
+
+      {/* Gallery Section */}
+      <section className="content-section scroll-section" id="gallery">
+        <Gallery />
+      </section>
+
+      {/* Reviews Section */}
+      <section className="content-section scroll-section" id="reviews">
+        <ReviewsPage />
+      </section>
+
+      {/* FAQ Section */}
+      <section className="content-section scroll-section" id="faq">
+        <FAQPage />
+      </section>
+
+      {/* Attractions Section */}
+      <section className="content-section scroll-section" id="attractions">
+        <AttractionsPage />
+      </section>
+
+      {/* Contact Section */}
+      <section className="content-section scroll-section" id="contacts">
+        <ContactPage />
+      </section>
+
       {/* CTA Section */}
-      <section className="cta-section">
+      <section className="cta-section scroll-section" id="cta">
         <div className="cta-container">
           <h2>Ready for Your Galle Adventure?</h2>
           <p>Book your stay today and experience the magic of Galle My Bungalow</p>

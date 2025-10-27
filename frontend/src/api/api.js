@@ -143,7 +143,109 @@ export const api = {
   getAllMessagesAdmin: async () => (await getAllMessagesAdmin()).data,
   markMessageAsDone: async (id) => (await markMessageAsDone(id)).data,
 
-  getAllReservationsAdmin: async () => (await axios.get('/admin/reservations')).data,
+  getAllReservationsAdmin: async () => {
+    const response = await axios.get('/admin/reservations');
+    const reservations = response.data || [];
+    
+    // Add default paymentStatus field since backend doesn't provide it yet
+    return reservations.map(reservation => ({
+      ...reservation,
+      paymentStatus: reservation.paymentStatus || 'PENDING' // Default to PENDING if not set
+    }));
+  },
+  getCalendarBookings: async (startDate, endDate) => {
+    // Get all reservations and filter by date range on the frontend
+    const allReservations = await axios.get('/admin/reservations');
+    const reservations = allReservations.data || [];
+    
+    // Filter reservations that overlap with the date range
+    return reservations.filter(reservation => {
+      const checkIn = new Date(reservation.checkInDate);
+      const checkOut = new Date(reservation.checkOutDate);
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      
+      // Check if reservation overlaps with the date range
+      return (checkIn <= end && checkOut >= start);
+    });
+  },
+
+  // Reservation management methods (mock implementation until backend endpoints are ready)
+  approveReservation: async (id) => {
+    // Mock implementation - simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    
+    // Get reservations with paymentStatus field
+    const reservations = await api.getAllReservationsAdmin();
+    const reservation = reservations.find(r => r.id === id);
+    
+    if (!reservation) {
+      throw new Error('Reservation not found');
+    }
+    
+    // Return updated reservation with new status
+    return {
+      ...reservation,
+      status: 'CONFIRMED'
+    };
+  },
+  
+  cancelReservation: async (id) => {
+    // Mock implementation - simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    
+    // Get reservations with paymentStatus field
+    const reservations = await api.getAllReservationsAdmin();
+    const reservation = reservations.find(r => r.id === id);
+    
+    if (!reservation) {
+      throw new Error('Reservation not found');
+    }
+    
+    // Return updated reservation with new status
+    return {
+      ...reservation,
+      status: 'CANCELLED'
+    };
+  },
+  
+  markReservationAsPaid: async (id) => {
+    // Mock implementation - simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    
+    // Get reservations with paymentStatus field
+    const reservations = await api.getAllReservationsAdmin();
+    const reservation = reservations.find(r => r.id === id);
+    
+    if (!reservation) {
+      throw new Error('Reservation not found');
+    }
+    
+    // Return updated reservation with new payment status
+    return {
+      ...reservation,
+      paymentStatus: 'PAID'
+    };
+  },
+  
+  markReservationAsUnpaid: async (id) => {
+    // Mock implementation - simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    
+    // Get reservations with paymentStatus field
+    const reservations = await api.getAllReservationsAdmin();
+    const reservation = reservations.find(r => r.id === id);
+    
+    if (!reservation) {
+      throw new Error('Reservation not found');
+    }
+    
+    // Return updated reservation with new payment status
+    return {
+      ...reservation,
+      paymentStatus: 'UNPAID'
+    };
+  },
 
   // Rooms
   getAllRooms: async () => (await roomApi.getAllRooms()).content,

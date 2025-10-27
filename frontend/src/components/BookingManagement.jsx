@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { api } from '../api/api';
 import './BookingManagement.css';
 
 export default function BookingManagement() {
+  const location = useLocation();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [filter, setFilter] = useState('all'); // all, pending, confirmed, cancelled
-
-  useEffect(() => {
-    loadReservations();
-  }, []);
+  const [highlightedReservationId, setHighlightedReservationId] = useState(null);
 
   const loadReservations = async () => {
     setLoading(true);
@@ -26,6 +25,37 @@ export default function BookingManagement() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadReservations();
+  }, []);
+
+  useEffect(() => {
+    // Check if there's a highlighted reservation from navigation state
+    const reservationId = location.state?.highlightedReservationId;
+    if (reservationId) {
+      setHighlightedReservationId(reservationId);
+      // Clear the location state to prevent re-highlighting on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  // Scroll to highlighted reservation after it's rendered
+  useEffect(() => {
+    if (highlightedReservationId && !loading && reservations.length > 0) {
+      setTimeout(() => {
+        const element = document.querySelector(`tr.highlighted-reservation`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+      // Clear the highlight after 3 seconds
+      const timeoutId = setTimeout(() => {
+        setHighlightedReservationId(null);
+      }, 3000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [highlightedReservationId, loading, reservations]);
 
   const handleAction = async (action, reservationId) => {
     setError('');
@@ -157,7 +187,10 @@ export default function BookingManagement() {
             </thead>
             <tbody>
               {filteredReservations.map(reservation => (
-                <tr key={reservation.id}>
+                <tr 
+                  key={reservation.id}
+                  className={highlightedReservationId === reservation.id ? 'highlighted-reservation' : ''}
+                >
                   <td>#{reservation.id}</td>
                   <td>
                     <div className="customer-info">

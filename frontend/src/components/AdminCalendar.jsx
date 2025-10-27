@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../api/api';
 import './AdminCalendar.css';
 
@@ -8,6 +9,8 @@ export default function AdminCalendar() {
   const [error, setError] = useState('');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
+  const [highlightedReservation, setHighlightedReservation] = useState(null);
+  const navigate = useNavigate();
 
   // Get calendar data for current month
   const getCalendarData = async (date) => {
@@ -51,6 +54,45 @@ export default function AdminCalendar() {
       const checkOut = new Date(booking.checkOutDate).toISOString().split('T')[0];
       return dateStr >= checkIn && dateStr <= checkOut;
     });
+  };
+
+  // Get status-based color class for calendar day
+  const getStatusColorClass = (dayBookings) => {
+    if (dayBookings.length === 0) return '';
+    
+    // Check if all bookings have the same status
+    const statuses = dayBookings.map(booking => booking.status);
+    const uniqueStatuses = [...new Set(statuses)];
+    
+    if (uniqueStatuses.length === 1) {
+      const status = uniqueStatuses[0].toLowerCase();
+      switch (status) {
+        case 'confirmed':
+          return 'status-confirmed';
+        case 'cancelled':
+          return 'status-cancelled';
+        case 'pending':
+          return 'status-pending';
+        default:
+          return 'status-pending';
+      }
+    }
+    
+    // Mixed statuses - prioritize by importance
+    if (statuses.includes('CONFIRMED')) return 'status-confirmed';
+    if (statuses.includes('CANCELLED')) return 'status-cancelled';
+    return 'status-pending';
+  };
+
+  // Navigate to booking management
+  const handleBookingClick = (booking) => {
+    setHighlightedReservation(booking.id);
+    // Pass the reservation ID via state to the booking management page
+    setTimeout(() => {
+      navigate('/admin/booking-management', { 
+        state: { highlightedReservationId: booking.id } 
+      });
+    }, 300);
   };
 
   // Generate calendar days
@@ -132,20 +174,23 @@ export default function AdminCalendar() {
           <div className="calendar-day-header">Sat</div>
 
           {/* Calendar days */}
-          {calendarDays.map((day, index) => (
-            <div
-              key={index}
-              className={`calendar-day ${!day.isCurrentMonth ? 'other-month' : ''} ${day.isToday ? 'today' : ''} ${day.bookings.length > 0 ? 'has-bookings' : ''}`}
-              onClick={() => setSelectedDate(day)}
-            >
-              <div className="day-number">{day.date.getDate()}</div>
-              {day.bookings.length > 0 && (
-                <div className="booking-indicator">
-                  <span className="booking-count">{day.bookings.length}</span>
-                </div>
-              )}
-            </div>
-          ))}
+          {calendarDays.map((day, index) => {
+            const statusColorClass = getStatusColorClass(day.bookings);
+            return (
+              <div
+                key={index}
+                className={`calendar-day ${!day.isCurrentMonth ? 'other-month' : ''} ${day.isToday ? 'today' : ''} ${day.bookings.length > 0 ? 'has-bookings' : ''} ${statusColorClass}`}
+                onClick={() => setSelectedDate(day)}
+              >
+                <div className="day-number">{day.date.getDate()}</div>
+                {day.bookings.length > 0 && (
+                  <div className="booking-indicator">
+                    <span className="booking-count">{day.bookings.length}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Legend */}
@@ -155,8 +200,16 @@ export default function AdminCalendar() {
             <span>Today</span>
           </div>
           <div className="legend-item">
-            <div className="legend-color has-bookings"></div>
-            <span>Has Bookings</span>
+            <div className="legend-color status-confirmed"></div>
+            <span>Confirmed</span>
+          </div>
+          <div className="legend-item">
+            <div className="legend-color status-pending"></div>
+            <span>Pending</span>
+          </div>
+          <div className="legend-item">
+            <div className="legend-color status-cancelled"></div>
+            <span>Cancelled</span>
           </div>
           <div className="legend-item">
             <div className="legend-color other-month"></div>
@@ -167,13 +220,19 @@ export default function AdminCalendar() {
 
       {/* Booking Details Modal */}
       {selectedDate && (
-        <div className="modal-overlay" onClick={() => setSelectedDate(null)}>
+        <div className="modal-overlay" onClick={() => {
+          setSelectedDate(null);
+          setHighlightedReservation(null);
+        }}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Bookings for {selectedDate.date.toLocaleDateString()}</h3>
               <button 
                 className="close-button"
-                onClick={() => setSelectedDate(null)}
+                onClick={() => {
+                  setSelectedDate(null);
+                  setHighlightedReservation(null);
+                }}
               >
                 ×
               </button>
@@ -184,7 +243,12 @@ export default function AdminCalendar() {
               ) : (
                 <div className="bookings-list">
                   {selectedDate.bookings.map(booking => (
-                    <div key={booking.id} className="booking-item">
+                    <div 
+                      key={booking.id} 
+                      className={`booking-item clickable-booking ${highlightedReservation === booking.id ? 'highlighted' : ''}`}
+                      onClick={() => handleBookingClick(booking)}
+                      title="Click to go to Booking Management"
+                    >
                       <div className="booking-header">
                         <h4>{booking.bungalowName}</h4>
                         <span className={`status ${booking.status.toLowerCase()}`}>
@@ -196,6 +260,9 @@ export default function AdminCalendar() {
                         <p><strong>Email:</strong> {booking.customerEmail}</p>
                         <p><strong>Check-in:</strong> {new Date(booking.checkInDate).toLocaleDateString()}</p>
                         <p><strong>Check-out:</strong> {new Date(booking.checkOutDate).toLocaleDateString()}</p>
+                      </div>
+                      <div className="booking-action-hint">
+                        <small>Click to manage this reservation</small>
                       </div>
                     </div>
                   ))}

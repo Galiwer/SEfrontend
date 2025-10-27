@@ -40,7 +40,9 @@ import AdminInvoiceCreatePage from '../pages/AdminInvoiceCreatePage';
 import AdminInvoiceManagementPage from '../pages/AdminInvoiceManagementPage';
 import CustomerInvoices from '../pages/CustomerInvoices';
 import AdminRooms from '../components/AdminRooms';
-import AdminSeasonalRates from '../components/AdminSeasonalRates'; 
+import AdminSeasonalRates from '../components/AdminSeasonalRates';
+import BookingManagement from '../components/BookingManagement';
+import AdminCalendar from '../components/AdminCalendar'; 
 
 const AppRoutes = () => {
   return (
@@ -173,6 +175,24 @@ const AppRoutes = () => {
               element={
                 <ProtectedRoute requireAdmin={true}>
                   <AdminReservations />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="booking-management"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <BookingManagement />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="calendar"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <AdminCalendar />
                 </ProtectedRoute>
               }
             />

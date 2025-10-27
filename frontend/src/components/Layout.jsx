@@ -166,6 +166,27 @@ export default function Layout() {
                   </svg>
                   <span>Reservations</span>
                 </NavLink>
+                <NavLink to="/admin/booking-management" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="18" height="16" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
+                    <path d="M3 10h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M8 14h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <circle cx="8" cy="6" r="1" fill="currentColor"/>
+                    <circle cx="12" cy="6" r="1" fill="currentColor"/>
+                    <circle cx="16" cy="6" r="1" fill="currentColor"/>
+                  </svg>
+                  <span>Booking Management</span>
+                </NavLink>
+                <NavLink to="/admin/calendar" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" strokeWidth="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="2"/>
+                    <circle cx="12" cy="16" r="1" fill="currentColor"/>
+                  </svg>
+                  <span>Calendar</span>
+                </NavLink>
                 <NavLink to="/admin/request" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

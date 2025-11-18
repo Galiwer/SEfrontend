@@ -143,9 +143,6 @@ const AdminCustomerPage = () => {
                   <h3>{customer.firstName} {customer.lastName}</h3>
                   <p className="customer-email">{customer.email}</p>
                   <p className="customer-phone">{customer.phone}</p>
-                  <p className="customer-location">
-                    {customer.city}, {customer.state} {customer.zipCode}
-                  </p>
                   <p className="customer-joined">
                     Joined: {formatDate(customer.createdAt)}
                   </p>
@@ -195,26 +192,6 @@ const AdminCustomerPage = () => {
                 <div className="detail-row">
                   <label>Phone:</label>
                   <span>{selectedCustomer.phone}</span>
-                </div>
-                <div className="detail-row">
-                  <label>Address:</label>
-                  <span>{selectedCustomer.address}</span>
-                </div>
-                <div className="detail-row">
-                  <label>City:</label>
-                  <span>{selectedCustomer.city}</span>
-                </div>
-                <div className="detail-row">
-                  <label>State:</label>
-                  <span>{selectedCustomer.state}</span>
-                </div>
-                <div className="detail-row">
-                  <label>ZIP Code:</label>
-                  <span>{selectedCustomer.zipCode}</span>
-                </div>
-                <div className="detail-row">
-                  <label>Country:</label>
-                  <span>{selectedCustomer.country}</span>
                 </div>
                 <div className="detail-row">
                   <label>Created:</label>

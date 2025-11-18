@@ -120,39 +120,101 @@ export default function AdminFAQPage() {
 
       {formOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2>{editing ? 'Edit FAQ' : 'Add FAQ'}</h2>
-              <button className="close-button" onClick={() => setFormOpen(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <form onSubmit={submit} className="register-grid">
-                <div className="register-field">
-                  <span>Question *</span>
-                  <input className="register-input" name="question" value={form.question} onChange={onChange} required />
+          <div className="modal" style={{ maxWidth: '720px' }}>
+            <form onSubmit={submit} className="card" style={{ boxShadow: 'none', margin: 0 }}>
+              <div className="card-header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
+                <div>
+                  <h2 className="card-title">{editing ? 'Edit FAQ' : 'Add New FAQ'}</h2>
+                  <p className="card-subtitle">
+                    Provide clear answers to help customers find information quickly.
+                  </p>
                 </div>
-                <div className="register-field">
-                  <span>Answer *</span>
-                  <textarea className="register-input" name="answer" value={form.answer} onChange={onChange} rows="4" required />
+                <button type="button" className="btn btn-secondary" onClick={() => setFormOpen(false)}>
+                  Close
+                </button>
+              </div>
+
+              <div className="form-grid" style={{ marginTop: '1.5rem' }}>
+                {error && <div className="error" style={{ gridColumn: '1 / -1' }}>{error}</div>}
+
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label className="label" htmlFor="question">Question *</label>
+                  <input
+                    type="text"
+                    id="question"
+                    name="question"
+                    value={form.question}
+                    onChange={onChange}
+                    className="input"
+                    required
+                    placeholder="Enter the frequently asked question"
+                  />
                 </div>
-                <div className="register-field">
-                  <span>Category</span>
-                  <input className="register-input" name="category" value={form.category} onChange={onChange} placeholder="e.g. Booking, Policies" />
+
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label className="label" htmlFor="answer">Answer *</label>
+                  <textarea
+                    id="answer"
+                    name="answer"
+                    value={form.answer}
+                    onChange={onChange}
+                    className="input"
+                    rows="4"
+                    required
+                    placeholder="Provide a clear and helpful answer"
+                  />
                 </div>
-                <div className="register-field">
-                  <span>Active</span>
-                  <input type="checkbox" name="isActive" checked={form.isActive} onChange={onChange} />
+
+                <div className="form-group">
+                  <label className="label" htmlFor="category">Category</label>
+                  <input
+                    type="text"
+                    id="category"
+                    name="category"
+                    value={form.category}
+                    onChange={onChange}
+                    className="input"
+                    placeholder="e.g. Booking, Policies, General"
+                  />
                 </div>
-                <div className="register-field">
-                  <span>Display Order</span>
-                  <input type="number" className="register-input" name="displayOrder" value={form.displayOrder} onChange={onChange} min="0" />
+
+                <div className="form-group">
+                  <label className="label" htmlFor="displayOrder">Display Order</label>
+                  <input
+                    type="number"
+                    id="displayOrder"
+                    name="displayOrder"
+                    value={form.displayOrder}
+                    onChange={onChange}
+                    className="input"
+                    min="0"
+                    placeholder="0"
+                  />
                 </div>
-                <button className="register-button" type="submit">{editing ? 'Update' : 'Create'}</button>
-              </form>
-            </div>
-            <div className="modal-footer">
-              <button className="close-modal-button" onClick={() => setFormOpen(false)}>Cancel</button>
-            </div>
+
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                      type="checkbox"
+                      name="isActive"
+                      checked={form.isActive}
+                      onChange={onChange}
+                      style={{ width: 'auto' }}
+                    />
+                    <span>Active (visible to customers)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn btn-secondary" onClick={() => setFormOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  {editing ? 'Update FAQ' : 'Create FAQ'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

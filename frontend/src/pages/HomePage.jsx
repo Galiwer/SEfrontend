@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import BungalowHistory from '../components/BungalowHistory';
 import Gallery from '../pages/gallery';
 import ReviewsPage from '../pages/ReviewsPage';
@@ -10,6 +10,7 @@ import './HomePage.css';
 
 export default function HomePage() {
   const [visibleSections, setVisibleSections] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
     // Smooth scroll behavior with intersection observer
@@ -45,6 +46,29 @@ export default function HomePage() {
     };
   }, []);
 
+  // Handle hash-based scrolling when navigating from other pages
+  useEffect(() => {
+    const hash = location.hash.replace('#', '');
+    if (hash) {
+      // Wait for DOM to be ready, then scroll
+      const timer = setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          const headerOffset = 80;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 300); // Increased delay to ensure components are rendered
+
+      return () => clearTimeout(timer);
+    }
+  }, [location.hash]);
+
   return (
     <div className="home-page">
       {/* Hero Section */}
@@ -54,7 +78,16 @@ export default function HomePage() {
           <p>Experience luxury beachfront living in the heart of historic Galle, Sri Lanka</p>
           <div className="hero-buttons">
             <Link to="/reserve" className="cta-button primary">Book Your Stay</Link>
-            <Link to="/history" className="cta-button secondary">Learn Our History</Link>
+            <a href="#history" className="cta-button secondary" onClick={(e) => { 
+              e.preventDefault(); 
+              const element = document.getElementById('history');
+              if (element) {
+                const headerOffset = 80;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+              }
+            }}>Learn Our History</a>
           </div>
         </div>
         <div className="hero-image">

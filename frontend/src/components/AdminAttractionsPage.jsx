@@ -2,21 +2,23 @@ import { useEffect, useState } from 'react'
 import { getAllAttractionsAdmin, createAttraction, updateAttraction, deleteAttraction } from '../api/api'
 import './AdminCustomerPage.css'
 
+const initialFormState = {
+  name: '',
+  description: '',
+  category: '',
+  location: '',
+  distance: '',
+  isActive: true,
+  displayOrder: 0
+}
+
 export default function AdminAttractionsPage() {
   const [attractions, setAttractions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [editing, setEditing] = useState(null)
   const [formOpen, setFormOpen] = useState(false)
-  const [form, setForm] = useState({
-    name: '',
-    description: '',
-    category: '',
-    location: '',
-    distance: '',
-    isActive: true,
-    displayOrder: 0
-  })
+  const [form, setForm] = useState(initialFormState)
 
   const load = async () => {
     setLoading(true)
@@ -35,15 +37,7 @@ export default function AdminAttractionsPage() {
 
   const openNew = () => {
     setEditing(null)
-    setForm({ 
-      name: '', 
-      description: '', 
-      category: '', 
-      location: '', 
-      distance: '', 
-      isActive: true, 
-      displayOrder: 0 
-    })
+    setForm(initialFormState)
     setFormOpen(true)
   }
 
@@ -136,80 +130,94 @@ export default function AdminAttractionsPage() {
 
       {formOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h2>{editing ? 'Edit Attraction' : 'Add New Attraction'}</h2>
-              <button className="close-button" onClick={() => setFormOpen(false)}>×</button>
-            </div>
-            
-            <form onSubmit={submit} className="modal-form">
-              <div className="form-group">
-                <label htmlFor="name">Name *</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={form.name}
-                  onChange={onChange}
-                  required
-                  placeholder="Enter attraction name"
-                />
+          <div className="modal" style={{ maxWidth: '720px' }}>
+            <form onSubmit={submit} className="card" style={{ boxShadow: 'none', margin: 0 }}>
+              <div className="card-header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
+                <div>
+                  <h2 className="card-title">{editing ? 'Edit Attraction' : 'Add New Attraction'}</h2>
+                  <p className="card-subtitle">
+                    Provide the attraction details to keep the public listing up to date.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFormOpen(false)}
+                  className="btn btn-secondary"
+                >
+                  Close
+                </button>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="description">Description *</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={form.description}
-                  onChange={onChange}
-                  required
-                  rows="3"
-                  placeholder="Enter attraction description"
-                />
-              </div>
-
-              <div className="form-row">
+              <div className="form-grid" style={{ marginTop: '1.5rem' }}>
                 <div className="form-group">
-                  <label htmlFor="category">Category</label>
+                  <label className="label" htmlFor="name">Name *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={form.name}
+                    onChange={onChange}
+                    required
+                    className="input"
+                    placeholder="Enter attraction name"
+                  />
+                </div>
+
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label className="label" htmlFor="description">Description *</label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={form.description}
+                    onChange={onChange}
+                    required
+                    rows="3"
+                    className="input"
+                    placeholder="Describe the attraction"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="label" htmlFor="category">Category</label>
                   <input
                     type="text"
                     id="category"
                     name="category"
                     value={form.category}
                     onChange={onChange}
+                    className="input"
                     placeholder="e.g., Beach, Historical, Nature"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="location">Location</label>
+                  <label className="label" htmlFor="location">Location</label>
                   <input
                     type="text"
                     id="location"
                     name="location"
                     value={form.location}
                     onChange={onChange}
+                    className="input"
                     placeholder="e.g., Galle Fort, Unawatuna"
                   />
                 </div>
-              </div>
 
-              <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="distance">Distance</label>
+                  <label className="label" htmlFor="distance">Distance</label>
                   <input
                     type="text"
                     id="distance"
                     name="distance"
                     value={form.distance}
                     onChange={onChange}
+                    className="input"
                     placeholder="e.g., 5 km, 15 minutes"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="displayOrder">Display Order</label>
+                  <label className="label" htmlFor="displayOrder">Display Order</label>
                   <input
                     type="number"
                     id="displayOrder"
@@ -217,27 +225,34 @@ export default function AdminAttractionsPage() {
                     value={form.displayOrder}
                     onChange={onChange}
                     min="0"
+                    className="input"
                   />
+                </div>
+
+                <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                  <label className="label">Visibility</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="isActive"
+                      name="isActive"
+                      checked={form.isActive}
+                      onChange={onChange}
+                    />
+                    <label htmlFor="isActive">Active (visible to customers)</label>
+                  </div>
                 </div>
               </div>
 
-              <div className="form-group">
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="isActive"
-                    checked={form.isActive}
-                    onChange={onChange}
-                  />
-                  Active (visible to customers)
-                </label>
-              </div>
-
               <div className="form-actions">
-                <button type="button" onClick={() => setFormOpen(false)} className="cancel-button">
+                <button
+                  type="button"
+                  onClick={() => setFormOpen(false)}
+                  className="btn btn-secondary"
+                >
                   Cancel
                 </button>
-                <button type="submit" className="submit-button">
+                <button type="submit" className="btn btn-primary">
                   {editing ? 'Update' : 'Create'} Attraction
                 </button>
               </div>

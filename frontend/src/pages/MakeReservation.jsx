@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -6,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext';
 export default function MakeReservation() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const today = useMemo(() => new Date().toISOString().split('T')[0], []);
+
   const [form, setForm] = useState({
     bungalowName: '',
     checkInDate: '',
@@ -41,12 +43,14 @@ export default function MakeReservation() {
         bungalowName: form.bungalowName,
         checkInDate: form.checkInDate,
         checkOutDate: form.checkOutDate,
-        customerId: user.id
+        customerId: user.id,
+        customerEmail: user.email
       });
       setSuccess('Reservation created successfully.');
       setTimeout(() => navigate('/dashboard/reservations'), 800);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create reservation');
+      console.error('Failed to create reservation', err);
+      setError(err.response?.data?.message || err.response?.data?.error || err.message || 'Failed to create reservation');
     } finally {
       setSubmitting(false);
     }
@@ -69,11 +73,11 @@ export default function MakeReservation() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <div>
             <label style={{ display: 'block', marginBottom: 6, color: '#555' }}>Check-in date</label>
-            <input type="date" name="checkInDate" value={form.checkInDate} onChange={onChange} style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 8 }} />
+            <input type="date" name="checkInDate" min={today} value={form.checkInDate} onChange={onChange} style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 8 }} />
           </div>
           <div>
             <label style={{ display: 'block', marginBottom: 6, color: '#555' }}>Check-out date</label>
-            <input type="date" name="checkOutDate" value={form.checkOutDate} onChange={onChange} style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 8 }} />
+            <input type="date" name="checkOutDate" min={form.checkInDate || today} value={form.checkOutDate} onChange={onChange} style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 8 }} />
           </div>
         </div>
 

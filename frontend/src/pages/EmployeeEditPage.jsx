@@ -34,26 +34,37 @@ export default function EmployeeEditPage() {
   }, [nic]);
 
   const handleUpdate = async (values) => {
-    if (!nic) return;
+    if (!nic) {
+      alert('NIC is required');
+      return;
+    }
+    if (!initial?.id) {
+      alert('Employee ID not found. Cannot update.');
+      return;
+    }
     try {
-      // assuming backend still uses numeric ID for update, otherwise you could pass NIC
-      await updateEmployee(Number(initial?.id), values);
+      await updateEmployee(Number(initial.id), values);
       alert('Successfully Updated Employee');
-      navigate('/employees');
+      navigate('/admin/employees');
     } catch (err) {
+      console.error('Update error:', err);
       alert(err?.response?.data?.message ?? err?.message ?? 'Failed to update employee');
     }
   };
 
   const handleDelete = async () => {
-    if (!initial?.id) return;
+    if (!initial?.id) {
+      alert('Employee ID not found. Cannot delete.');
+      return;
+    }
     
     setIsDeleting(true);
     try {
       await deleteEmployee(Number(initial.id));
       alert('Employee deleted successfully');
-      navigate('/employees');
+      navigate('/admin/employees');
     } catch (err) {
+      console.error('Delete error:', err);
       alert(err?.response?.data?.message ?? err?.message ?? 'Failed to delete employee');
     } finally {
       setIsDeleting(false);

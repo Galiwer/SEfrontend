@@ -16,7 +16,7 @@ export default function CustomerReservations() {
     setLoading(true)
     setError('')
     try {
-      const { data } = await api.getReservations({ email: user.email, filter })
+      const data = await api.getReservations({ email: user.email, filter })
       setReservations(data || [])
     } catch (e) {
       setError('Failed to load reservations. Please try again.')

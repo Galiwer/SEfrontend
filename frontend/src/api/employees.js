@@ -33,7 +33,8 @@ export const getEmployeeByNic = async (nic) => {
 };
 
 export const deleteEmployee = async (id) => {
-  await axios.delete(`/employees/${id}`);
+  const res = await axios.delete(`/employees/${id}`);
+  return res;
 };
 
 export const getEmployees = async () => {

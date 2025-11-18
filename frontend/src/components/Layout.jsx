@@ -21,14 +21,11 @@ export default function Layout() {
         <div className="sidebar-header">
           <div className="logo-group">
             <div className="logo-mark" aria-hidden>
-              <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="40" height="40" rx="10" fill="url(#gradient)"/>
-                <path d="M10 15h20v15H10V15z" fill="white" opacity="0.9"/>
-                <path d="M12 17h16v2H12v-2z" fill="url(#gradient)"/>
-                <path d="M12 21h16v2H12v-2z" fill="url(#gradient)"/>
-                <path d="M12 25h10v2H12v-2z" fill="url(#gradient)"/>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="url(#homeGradient)"/>
+                <path d="M9 22V12H15V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <defs>
-                  <linearGradient id="gradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                  <linearGradient id="homeGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
                     <stop stopColor="#228B22"/>
                     <stop offset="1" stopColor="#DAA425"/>
                   </linearGradient>

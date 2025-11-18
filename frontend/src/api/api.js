@@ -133,6 +133,8 @@ export const api = {
   // Reservations
   getReservations: async ({ email, filter = 'all' }) =>
     (await axios.get('/customers/reservations', { params: { email, filter } })).data,
+  createReservation: async (payload) =>
+    (await axios.post('/customers/reservations', payload)).data,
 
   getBungalowHistory: async ({ category } = {}) =>
     (await axios.get('/bungalow/history', { params: { category } })).data,
@@ -170,81 +172,33 @@ export const api = {
     });
   },
 
-  // Reservation management methods (mock implementation until backend endpoints are ready)
+  // Reservation management methods
   approveReservation: async (id) => {
-    // Mock implementation - simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-    
-    // Get reservations with paymentStatus field
-    const reservations = await api.getAllReservationsAdmin();
-    const reservation = reservations.find(r => r.id === id);
-    
-    if (!reservation) {
-      throw new Error('Reservation not found');
-    }
-    
-    // Return updated reservation with new status
-    return {
-      ...reservation,
-      status: 'CONFIRMED'
-    };
+    const response = await axios.put(`/admin/reservations/${id}/status`, null, {
+      params: { status: 'CONFIRMED' }
+    });
+    return response.data;
   },
   
   cancelReservation: async (id) => {
-    // Mock implementation - simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-    
-    // Get reservations with paymentStatus field
-    const reservations = await api.getAllReservationsAdmin();
-    const reservation = reservations.find(r => r.id === id);
-    
-    if (!reservation) {
-      throw new Error('Reservation not found');
-    }
-    
-    // Return updated reservation with new status
-    return {
-      ...reservation,
-      status: 'CANCELLED'
-    };
+    const response = await axios.put(`/admin/reservations/${id}/status`, null, {
+      params: { status: 'CANCELLED' }
+    });
+    return response.data;
   },
   
   markReservationAsPaid: async (id) => {
-    // Mock implementation - simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-    
-    // Get reservations with paymentStatus field
-    const reservations = await api.getAllReservationsAdmin();
-    const reservation = reservations.find(r => r.id === id);
-    
-    if (!reservation) {
-      throw new Error('Reservation not found');
-    }
-    
-    // Return updated reservation with new payment status
-    return {
-      ...reservation,
-      paymentStatus: 'PAID'
-    };
+    const response = await axios.put(`/admin/reservations/${id}/payment-status`, null, {
+      params: { paymentStatus: 'PAID' }
+    });
+    return response.data;
   },
   
   markReservationAsUnpaid: async (id) => {
-    // Mock implementation - simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-    
-    // Get reservations with paymentStatus field
-    const reservations = await api.getAllReservationsAdmin();
-    const reservation = reservations.find(r => r.id === id);
-    
-    if (!reservation) {
-      throw new Error('Reservation not found');
-    }
-    
-    // Return updated reservation with new payment status
-    return {
-      ...reservation,
-      paymentStatus: 'UNPAID'
-    };
+    const response = await axios.put(`/admin/reservations/${id}/payment-status`, null, {
+      params: { paymentStatus: 'UNPAID' }
+    });
+    return response.data;
   },
 
   // Rooms

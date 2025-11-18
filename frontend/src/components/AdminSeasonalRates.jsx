@@ -29,7 +29,13 @@ export default function AdminSeasonalRates() {
 
   // Helper: attach roomName to a single rate
   const attachRoomName = (rate) => {
-    const room = rooms.find(r => r.id === rate.room?.id || rate.roomId);
+    // If roomName already exists in the API response, use it
+    if (rate.roomName) {
+      return rate;
+    }
+    // Otherwise, try to find it from the rooms array
+    const roomId = rate.room?.id || rate.roomId;
+    const room = rooms.find(r => r.id === roomId || r.id === parseInt(roomId, 10));
     return { ...rate, roomName: room?.name || 'Unknown Room' };
   };
 
@@ -41,8 +47,8 @@ export default function AdminSeasonalRates() {
       setError('');
       try {
         const data = await seasonalRateApi.getRatesByRoom(selectedRoom);
-        const ratesWithNames = data.map(rate => attachRoomName(rate));
-        setRates(ratesWithNames);
+        // API response already includes roomName, so use it directly
+        setRates(data);
       } catch (err) {
         console.error(err);
         setError('Failed to load seasonal rates');
@@ -66,7 +72,8 @@ export default function AdminSeasonalRates() {
         discountPercentage: parseFloat(newRate.discountPercentage),
       };
       const created = await seasonalRateApi.createRate(payload);
-      setRates(prev => [...prev, attachRoomName({ ...created, roomId: selectedRoom })]);
+      // API response already includes roomName, so just use it directly
+      setRates(prev => [...prev, created]);
       setNewRate({ startDate: '', endDate: '', discountPercentage: '' });
     } catch (err) {
       console.error(err);
@@ -101,7 +108,8 @@ export default function AdminSeasonalRates() {
         discountPercentage: parseFloat(editRate.discountPercentage),
       };
       const updated = await seasonalRateApi.updateRate(editRate.id, payload);
-      setRates(prev => prev.map(r => r.id === updated.id ? attachRoomName({ ...updated, roomId: editRate.roomId }) : r));
+      // API response already includes roomName, so use it directly
+      setRates(prev => prev.map(r => r.id === updated.id ? updated : r));
       closeEditModal();
     } catch (err) {
       console.error(err);

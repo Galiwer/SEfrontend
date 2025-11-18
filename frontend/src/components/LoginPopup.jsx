@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './LoginPopup.css';
 
-export default function LoginPopup({ isOpen, onClose }) {
+export default function LoginPopup({ isOpen, onClose, onSwitchToRegister }) {
   const [formData, setFormData] = useState({
     usernameOrEmail: '',
     password: ''
@@ -101,8 +101,7 @@ export default function LoginPopup({ isOpen, onClose }) {
         </form>
 
         <div className="login-popup-footer">
-          <p>Don't have an account? <a href="#" onClick={(e) => { e.preventDefault(); /* Open register popup */ }}>Register here</a></p>
-          <p><small>System will automatically detect if you're an admin or customer</small></p>
+          <p>Don't have an account? <a href="#" onClick={(e) => { e.preventDefault(); onClose(); if (onSwitchToRegister) onSwitchToRegister(); }}>Register here</a></p>
         </div>
       </div>
     </div>

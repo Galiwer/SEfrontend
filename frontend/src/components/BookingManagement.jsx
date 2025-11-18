@@ -88,6 +88,9 @@ export default function BookingManagement() {
         prev.map(r => r.id === reservationId ? result : r)
       );
       
+      // Reload reservations to ensure consistency
+      await loadReservations();
+      
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
     } catch (e) {

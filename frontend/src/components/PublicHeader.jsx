@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoginPopup from './LoginPopup';
 import RegisterPopup from './RegisterPopup';
@@ -11,6 +11,64 @@ export default function PublicHeader() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const { user, logout, isAdmin, isCustomer, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Scroll to top of page
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // Handle logo/home click
+  const handleHomeClick = (e) => {
+    if (location.pathname === '/' || location.pathname === '/home') {
+      e.preventDefault();
+      scrollToTop();
+    }
+  };
+
+  // Scroll to section on HomePage
+  const scrollToSection = (sectionId) => {
+    setIsMenuOpen(false);
+    
+    // If we're already on the home page, just scroll
+    if (location.pathname === '/' || location.pathname === '/home') {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const headerOffset = 80; // Adjust based on your header height
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    } else {
+      // Navigate to home page with hash, then scroll
+      navigate(`/#${sectionId}`);
+      // Scroll will be handled by HomePage useEffect after navigation
+    }
+  };
+
+  // Check URL parameters to open popups
+  useEffect(() => {
+    const registerParam = searchParams.get('register');
+    const loginParam = searchParams.get('login');
+    
+    if (registerParam === 'true') {
+      setIsRegisterOpen(true);
+      // Clean up URL
+      setSearchParams({});
+    } else if (loginParam === 'true') {
+      setIsLoginOpen(true);
+      // Clean up URL
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleLogout = () => {
     logout();
@@ -30,13 +88,18 @@ export default function PublicHeader() {
           <div className="logo">
             <div className="logo-icon">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="url(#homeGradientLoading)"/>
                 <path d="M9 22V12H15V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <defs>
+                  <linearGradient id="homeGradientLoading" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#228B22"/>
+                    <stop offset="1" stopColor="#DAA425"/>
+                  </linearGradient>
+                </defs>
               </svg>
             </div>
             <div className="logo-text">
               <span className="logo-title">Galle My Bungalow</span>
-              <span className="logo-subtitle">Luxury Beachfront Living</span>
             </div>
           </div>
           <div className="loading-spinner">Loading...</div>
@@ -49,16 +112,13 @@ export default function PublicHeader() {
     <header className="public-header">
       <div className="header-container">
         {/* Logo */}
-        <Link to="/" className="logo">
+        <Link to="/" className="logo" onClick={handleHomeClick}>
           <div className="logo-icon">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="40" height="40" rx="8" fill="url(#gradient)"/>
-              <path d="M10 15h20v15H10V15z" fill="white" opacity="0.9"/>
-              <path d="M12 17h16v2H12v-2z" fill="url(#gradient)"/>
-              <path d="M12 21h16v2H12v-2z" fill="url(#gradient)"/>
-              <path d="M12 25h10v2H12v-2z" fill="url(#gradient)"/>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="url(#homeGradient)"/>
+              <path d="M9 22V12H15V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <defs>
-                <linearGradient id="gradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                <linearGradient id="homeGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
                   <stop stopColor="#228B22"/>
                   <stop offset="1" stopColor="#DAA425"/>
                 </linearGradient>
@@ -67,19 +127,18 @@ export default function PublicHeader() {
           </div>
           <div className="logo-text">
             <h1>Galle My Bungalow</h1>
-            <p>Luxury Beachfront Experience</p>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
         <nav className="desktop-nav">
-          <Link to="/" className="nav-link">Home</Link>
-          <Link to="/history" className="nav-link">History</Link>
-          <Link to="/gallery" className="nav-link">Gallery</Link>
-          <Link to="/reviews" className="nav-link">Reviews</Link>
-          <Link to="/faq" className="nav-link">FAQ</Link>
-          <Link to="/attractions" className="nav-link">Attractions</Link>
-          <Link to="/contact" className="nav-link">Contact</Link>
+          <Link to="/" className="nav-link" onClick={handleHomeClick}>Home</Link>
+          <a href="#history" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('history'); }}>History</a>
+          <a href="#gallery" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('gallery'); }}>Gallery</a>
+          <a href="#reviews" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('reviews'); }}>Reviews</a>
+          <a href="#faq" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('faq'); }}>FAQ</a>
+          <a href="#attractions" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('attractions'); }}>Attractions</a>
+          <a href="#contacts" className="nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('contacts'); }}>Contact</a>
           
           {isCustomer() && (
             <>
@@ -126,12 +185,19 @@ export default function PublicHeader() {
       {isMenuOpen && (
         <div className="mobile-menu">
           <nav className="mobile-nav">
-            <Link to="/" className="mobile-nav-link" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link to="/history" className="mobile-nav-link" onClick={() => setIsMenuOpen(false)}>History</Link>
-            <Link to="/faq" className="mobile-nav-link" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
-            <Link to="/attractions" className="mobile-nav-link" onClick={() => setIsMenuOpen(false)}>Attractions</Link>
-            <Link to="/contact" className="mobile-nav-link" onClick={() => setIsMenuOpen(false)}>Contact</Link>
-            <Link to="/reviews" className="mobile-nav-link" onClick={() => setIsMenuOpen(false)}>Reviews</Link>
+            <Link to="/" className="mobile-nav-link" onClick={(e) => { 
+              setIsMenuOpen(false);
+              if (location.pathname === '/' || location.pathname === '/home') {
+                e.preventDefault();
+                scrollToTop();
+              }
+            }}>Home</Link>
+            <a href="#history" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('history'); }}>History</a>
+            <a href="#gallery" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('gallery'); }}>Gallery</a>
+            <a href="#reviews" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('reviews'); }}>Reviews</a>
+            <a href="#faq" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('faq'); }}>FAQ</a>
+            <a href="#attractions" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('attractions'); }}>Attractions</a>
+            <a href="#contacts" className="mobile-nav-link" onClick={(e) => { e.preventDefault(); scrollToSection('contacts'); }}>Contact</a>
             {isCustomer() && (
               <>
                 <Link to="/reservations" className="mobile-nav-link" onClick={() => setIsMenuOpen(false)}>My Reservations</Link>
@@ -160,10 +226,24 @@ export default function PublicHeader() {
       )}
       
       {/* Login Popup */}
-      <LoginPopup isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <LoginPopup 
+        isOpen={isLoginOpen} 
+        onClose={() => setIsLoginOpen(false)}
+        onSwitchToRegister={() => {
+          setIsLoginOpen(false);
+          setIsRegisterOpen(true);
+        }}
+      />
       
       {/* Register Popup */}
-      <RegisterPopup isOpen={isRegisterOpen} onClose={() => setIsRegisterOpen(false)} />
+      <RegisterPopup 
+        isOpen={isRegisterOpen} 
+        onClose={() => setIsRegisterOpen(false)}
+        onSwitchToLogin={() => {
+          setIsRegisterOpen(false);
+          setIsLoginOpen(true);
+        }}
+      />
     </header>
   );
 }

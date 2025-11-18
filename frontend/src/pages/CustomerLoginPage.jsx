@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './CustomerLoginPage.css';
 
@@ -97,15 +97,15 @@ const CustomerLoginPage = () => {
         <div className="customer-login-footer">
           <p>
             Don't have an account?{' '}
-            <a href="/register" className="register-link">
+            <Link to="/?register=true" className="register-link">
               Register here
-            </a>
+            </Link>
           </p>
           <p>
             Admin?{' '}
-            <a href="/login" className="admin-link">
+            <Link to="/login" className="admin-link">
               Admin Login
-            </a>
+            </Link>
           </p>
         </div>
       </div>

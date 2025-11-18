@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './RegisterPopup.css';
 
-export default function RegisterPopup({ isOpen, onClose }) {
+export default function RegisterPopup({ isOpen, onClose, onSwitchToLogin }) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -180,7 +180,7 @@ export default function RegisterPopup({ isOpen, onClose }) {
         </form>
 
         <div className="register-popup-footer">
-          <p>Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); onClose(); }}>Sign in here</a></p>
+          <p>Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); onClose(); if (onSwitchToLogin) onSwitchToLogin(); }}>Sign in here</a></p>
         </div>
       </div>
     </div>

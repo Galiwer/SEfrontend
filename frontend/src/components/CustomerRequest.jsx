@@ -1,20 +1,35 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { api } from '../api/api'
-import './CustomerReservations.css' // reuse same CSS base styles
+import './CustomerRequest.css'
+
+const formatDateTime = (value) =>
+  new Date(value).toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 
 export default function CustomerRequest() {
   const { user } = useAuth()
-  const [form, setForm] = useState({
+  const initialForm = useMemo(() => ({
     customerName: user?.username || '',
     email: user?.email || '',
     subject: '',
-    body: ''
-  })
-  const [Messages, setMessages] = useState([])
+    message: ''
+  }), [user?.username, user?.email])
+
+  const [form, setForm] = useState(initialForm)
+  const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+
+  useEffect(() => {
+    setForm(initialForm)
+  }, [initialForm])
 
   const fetchMessages = async () => {
     if (!user?.email) return
@@ -24,7 +39,7 @@ export default function CustomerRequest() {
       const data = await api.getMessages({ email: user.email })
       setMessages(data || [])
     } catch (e) {
-      setError('Failed to load Messages. Please try again.')
+      setError('Failed to load messages. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -43,111 +58,131 @@ export default function CustomerRequest() {
   }
 
   const handleSubmit = async (e) => {
-  e.preventDefault()
-  setLoading(true)
-  setError('')
-  setSuccess('')
-  try {
-    // map form to backend expected fields
-    await api.createMessage({
-    subject: form.subject,  
-    content: form.content,
-    customerEmail: form.email,
-    createdAt: new Date(),
-    done: false
-})
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setSuccess('')
+    try {
+      await api.createMessage({
+        subject: form.subject,
+        content: form.message,
+        customerEmail: form.email,
+        customerName: form.customerName
+      })
 
-    setSuccess('Message sent successfully.')
-    setForm(prev => ({ ...prev, subject: '', body: '' }))
-    fetchMessages()
-  } catch (err) {
-    setError('Failed to send message. Please try again.')
-  } finally {
-    setLoading(false)
+      setSuccess('Message sent successfully.')
+      setForm(prev => ({ ...prev, subject: '', message: '' }))
+      fetchMessages()
+    } catch (err) {
+      setError('Failed to send message. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
-}
-
 
   if (!user) {
     return (
-      <div className="admin-customer-page">
-        <div className="page-header">
-          <h1>Your Messages</h1>
-          <p>Please log in to view or send Messages</p>
-        </div>
-        <div className="login-prompt">
-          <p>You need to be logged in to send and view your Messages.</p>
-          <a href="/login" className="login-link">Go to Login</a>
+      <div className="customer-request-page">
+        <div className="container">
+          <div className="card empty-state-card">
+            <h3>Sign in to send a request</h3>
+            <p>You need to be logged in to view or send customer requests.</p>
+            <a href="/login" className="btn btn-primary">Go to Login</a>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="admin-customer-page">
-      <div className="page-header">
-        <h1>Your Messages</h1>
-        <p>Send new Messages and track their status</p>
-      </div>
-
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
-
-      <div className="search-section">
-        <form className="search-form" onSubmit={handleSubmit}>
-          <input
-            className="search-input"
-            type="text"
-            name="subject"
-            value={form.subject}
-            placeholder="Subject"
-            onChange={handleChange}
-            required
-          />
-          <textarea
-            className="search-input"
-            name="content"
-            value={form.content}
-            placeholder="Your message"
-            rows="3"
-            onChange={handleChange}
-            required
-          />
-          <button className="search-button" type="submit" disabled={loading}>
-            {loading ? 'Sending...' : 'Send'}
-          </button>
-        </form>
-      </div>
-
-      <div className="customers-section">
-        <div className="customers-header">
-          <h2>Your Messages</h2>
-          <span className="customers-count">{Messages.length}</span>
+    <div className="customer-request-page">
+      <div className="container">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">Customer Requests</h1>
+            <p className="page-description">
+              Send us a quick message and keep track of every response.
+            </p>
+          </div>
         </div>
 
-        {loading ? (
-          <div className="loading">Loading Messages...</div>
-        ) : Messages.length === 0 ? (
-          <div className="no-customers">No Messages found.</div>
-        ) : (
-          <div className="customers-grid">
-            {Messages.map(m => (
-              <div className="customer-card" key={m.id}>
-                <div className="customer-info">
-                  <h3>{m.subject}</h3>
-                  <h4>{m.content}</h4>
-                  <div className="customer-email">
-                    Sent: {new Date(m.createdAt).toLocaleString()}
-                  </div>
-                  <div className="customer-joined">
-                    Status: {m.done ? 'Done ✅' : 'Pending ⏳'}
-                  </div>
-                  <p>{m.body}</p>
-                </div>
+        {error && <div className="error">{error}</div>}
+        {success && <div className="success">{success}</div>}
+
+        <div className="request-grid">
+          <div className="card request-form-card">
+            <div className="card-header">
+              <h2 className="card-title">Send a new request</h2>
+              <p className="card-subtitle">We typically respond within one business day.</p>
+            </div>
+
+            <form className="form-grid" onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label className="label" htmlFor="subject">Subject *</label>
+                <input
+                  className="input"
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  value={form.subject}
+                  placeholder="Reservation update, question about stay..."
+                  onChange={handleChange}
+                  required
+                />
               </div>
-            ))}
+
+              <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                <label className="label" htmlFor="message">Message *</label>
+                <textarea
+                  className="input"
+                  id="message"
+                  name="message"
+                  value={form.message}
+                  placeholder="Provide as much detail as possible"
+                  rows="4"
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-actions" style={{ paddingTop: 0, borderTop: 'none' }}>
+                <button className="btn btn-primary" type="submit" disabled={loading}>
+                  {loading ? 'Sending...' : 'Send Request'}
+                </button>
+              </div>
+            </form>
           </div>
-        )}
+
+          <div className="card request-messages-card">
+            <div className="card-header">
+              <div className="card-title">Your recent requests</div>
+              <p className="card-subtitle">Status updates for everything you have sent us.</p>
+            </div>
+
+            {loading ? (
+              <div className="loading">Loading messages...</div>
+            ) : messages.length === 0 ? (
+              <div className="empty-request-list">
+                You haven't sent any requests yet. Reach out using the form.
+              </div>
+            ) : (
+              <div className="message-list">
+                {messages.map((m) => (
+                  <div className="message-item" key={m.id}>
+                    <div className="message-meta">
+                      <span>{m.createdAt ? formatDateTime(m.createdAt) : 'Pending timestamp'}</span>
+                      <span className={`status-pill ${m.done ? 'done' : 'pending'}`}>
+                        {m.done ? 'Resolved' : 'Pending'}
+                      </span>
+                    </div>
+                    <h3>{m.subject}</h3>
+                    <p className="message-body">{m.content || m.body || 'No additional details provided.'}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -2,20 +2,21 @@ import React, { useEffect, useState } from "react";
 import { roomApi } from "../api/api";
 import axios from "axios";
 
+const initialRoomState = {
+  id: null,
+  name: "",
+  description: "",
+  price: "",
+  capacity: "",
+  status: "AVAILABLE",
+};
+
 export default function AdminRooms() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
-
-  const [form, setForm] = useState({
-    id: null,
-    name: "",
-    description: "",
-    price: "",
-    capacity: "",
-    status: "AVAILABLE",
-  });
+  const [form, setForm] = useState(initialRoomState);
 
   const loadRooms = async () => {
     setLoading(true);
@@ -65,7 +66,7 @@ export default function AdminRooms() {
         alert("Room added successfully!");
       }
       setShowForm(false);
-      setForm({ id: null, name: "", description: "", price: "", capacity: "", status: "AVAILABLE" });
+      setForm(initialRoomState);
       await loadRooms();
     } catch (err) {
       console.error(err);
@@ -137,53 +138,108 @@ export default function AdminRooms() {
       {/* Modal for Add/Edit */}
       {showForm && (
         <div className="modal-overlay">
-          <div className="modal">
-            <h2>{form.id ? "Edit Room" : "Add New Room"}</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Name</label>
-                <input type="text" name="name" value={form.name} onChange={handleChange} required />
+          <div className="modal" style={{ maxWidth: "640px" }}>
+            <form onSubmit={handleSubmit} className="card" style={{ boxShadow: "none", margin: 0 }}>
+              <div className="card-header" style={{ borderBottom: "none", paddingBottom: 0 }}>
+                <div>
+                  <h2 className="card-title">{form.id ? "Edit Room" : "Add New Room"}</h2>
+                  <p className="card-subtitle">
+                    Provide room details so guests see accurate pricing and capacity.
+                  </p>
+                </div>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>
+                  Close
+                </button>
               </div>
-              <div className="form-group">
-                <label>Description</label>
-                <textarea name="description" value={form.description} onChange={handleChange} rows="3" />
+
+              <div className="form-grid" style={{ marginTop: "1.5rem" }}>
+                <div className="form-group">
+                  <label className="label" htmlFor="room-name">Name *</label>
+                  <input
+                    id="room-name"
+                    name="name"
+                    type="text"
+                    value={form.name}
+                    onChange={handleChange}
+                    className="input"
+                    required
+                    placeholder="e.g., Deluxe Suite"
+                  />
+                </div>
+
+                <div className="form-group" style={{ gridColumn: "1 / -1" }}>
+                  <label className="label" htmlFor="room-description">Description</label>
+                  <textarea
+                    id="room-description"
+                    name="description"
+                    value={form.description}
+                    onChange={handleChange}
+                    className="input"
+                    rows="3"
+                    placeholder="Highlight unique features or amenities"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="label" htmlFor="room-price">Nightly Price (LKR) *</label>
+                  <input
+                    id="room-price"
+                    name="price"
+                    type="number"
+                    value={form.price}
+                    onChange={handleChange}
+                    className="input"
+                    required
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                  />
+                  <div className="help-text">Enter the base nightly rate.</div>
+                </div>
+
+                <div className="form-group">
+                  <label className="label" htmlFor="room-capacity">Capacity *</label>
+                  <input
+                    id="room-capacity"
+                    name="capacity"
+                    type="number"
+                    value={form.capacity}
+                    onChange={handleChange}
+                    className="input"
+                    required
+                    min="1"
+                    placeholder="Number of guests"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="label" htmlFor="room-status">Status</label>
+                  <select
+                    id="room-status"
+                    name="status"
+                    value={form.status}
+                    onChange={handleChange}
+                    className="input"
+                  >
+                    <option value="AVAILABLE">Available</option>
+                    <option value="BOOKED">Booked</option>
+                    <option value="MAINTENANCE">Maintenance</option>
+                  </select>
+                </div>
               </div>
-              <div className="form-group">
-                <label>Price</label>
-                <input type="number" name="price" value={form.price} onChange={handleChange} required min="0" step="0.01" />
-              </div>
-              <div className="form-group">
-                <label>Capacity</label>
-                <input type="number" name="capacity" value={form.capacity} onChange={handleChange} required min="1" />
-              </div>
-              <div className="form-group">
-                <label>Status</label>
-                <select name="status" value={form.status} onChange={handleChange}>
-                  <option value="AVAILABLE">AVAILABLE</option>
-                  <option value="BOOKED">BOOKED</option>
-                  <option value="MAINTENANCE">MAINTENANCE</option>
-                </select>
-              </div>
-              <div className="modal-actions">
-                <button type="submit" className="btn btn-success">Save</button>
-                <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>Cancel</button>
+
+              <div className="form-actions">
+                <button type="button" className="btn btn-secondary" onClick={() => setShowForm(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  {form.id ? "Update Room" : "Create Room"}
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      <style>{`
-        .modal-overlay {
-          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(0,0,0,0.4);
-          display: flex; align-items: center; justify-content: center; z-index: 999;
-        }
-        .modal { background: white; padding: 20px; border-radius: 10px; width: 400px; }
-        .form-group { margin-bottom: 10px; display: flex; flex-direction: column; }
-        .form-group label { font-weight: bold; margin-bottom: 5px; }
-        .modal-actions { display: flex; justify-content: space-between; margin-top: 15px; }
-      `}</style>
     </div>
   );
 }
